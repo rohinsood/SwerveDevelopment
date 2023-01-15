@@ -20,25 +20,14 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.Mode;
-import frc.robot.commands.ClimbForFun;
 import frc.robot.commands.DriveWithJoysticks;
 import frc.robot.commands.FeedForwardCharacterization;
 import frc.robot.commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
-import frc.robot.commands.FiveCargoAuto;
-import frc.robot.commands.RunClimber;
-import frc.robot.commands.ScoreWithForce;
-import frc.robot.commands.SixBallAuto;
-import frc.robot.commands.Taxi;
-import frc.robot.commands.ThreeCargoAuto;
 import frc.robot.commands.DriveWithJoysticks.JoystickMode;
-import frc.robot.subsystems.climber.Climber;
-import frc.robot.subsystems.climber.ClimberIO;
-import frc.robot.subsystems.climber.ClimberIOTalonSRX;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.ModuleIO;
-import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOSparkMAX;
 import frc.robot.util.Alert;
 import frc.robot.util.Alert.AlertType;
@@ -58,7 +47,6 @@ public class RobotContainer {
 
   // Subsystems
   private Drive drive;
-  private Climber climber;
 
   // OI objects
   private XboxController driverController = new XboxController(0);
@@ -84,14 +72,11 @@ public class RobotContainer {
     if (Constants.getMode() != Mode.REPLAY) {
       switch (Constants.getRobot()) {
         case ROBOT_2022S:
-          drive = new Drive(new GyroIOPigeon2(), new ModuleIOSparkMAX(0),
+          drive = new Drive(new GyroIONavX(), new ModuleIOSparkMAX(0),
               new ModuleIOSparkMAX(1), new ModuleIOSparkMAX(2),
               new ModuleIOSparkMAX(3));
-          climber = new Climber(new ClimberIOTalonSRX());
           break;
         case ROBOT_SIMBOT:
-          drive = new Drive(new GyroIO() {}, new ModuleIOSim(),
-              new ModuleIOSim(), new ModuleIOSim(), new ModuleIOSim());
           break;
         default:
           break;
@@ -102,47 +87,10 @@ public class RobotContainer {
     drive = drive != null ? drive
         : new Drive(new GyroIO() {}, new ModuleIO() {}, new ModuleIO() {},
             new ModuleIO() {}, new ModuleIO() {});
-    climber = climber != null ? climber : new Climber(new ClimberIO() {});
 
     // Set up auto routines
     autoChooser.addDefaultOption("Do Nothing",
         new AutoRoutine(AutoPosition.ORIGIN, new InstantCommand()));
-    autoChooser.addOption("Climb For Fun (TB)",
-        new AutoRoutine(AutoPosition.TARMAC_B,
-            new ClimbForFun(drive, climber, AutoPosition.TARMAC_B)));
-    autoChooser.addOption("Climb For Fun (FA*)",
-        new AutoRoutine(AutoPosition.FENDER_A_REVERSED,
-            new ClimbForFun(drive, climber, AutoPosition.FENDER_A_REVERSED)));
-    autoChooser.addOption("Score With Force (FA*)",
-        new AutoRoutine(AutoPosition.FENDER_A_REVERSED,
-            new ScoreWithForce(drive, AutoPosition.FENDER_A_REVERSED)));
-    autoChooser.addOption("Score With Force (FB*)",
-        new AutoRoutine(AutoPosition.FENDER_B_REVERSED,
-            new ScoreWithForce(drive, AutoPosition.FENDER_B_REVERSED)));
-    autoChooser.addOption("Taxi (TA)", new AutoRoutine(AutoPosition.TARMAC_A,
-        new WaitCommand(12.0).andThen(new Taxi(drive, false))));
-    autoChooser.addOption("Taxi (TB)", new AutoRoutine(AutoPosition.TARMAC_B,
-        new WaitCommand(12.0).andThen(new Taxi(drive, false))));
-    autoChooser.addOption("Taxi (TC)", new AutoRoutine(AutoPosition.TARMAC_C,
-        new WaitCommand(12.0).andThen(new Taxi(drive, false))));
-    autoChooser.addOption("Taxi (TD)", new AutoRoutine(AutoPosition.TARMAC_D,
-        new WaitCommand(12.0).andThen(new Taxi(drive, false))));
-    autoChooser.addOption("Taxi (FA)", new AutoRoutine(AutoPosition.FENDER_A,
-        new WaitCommand(12.0).andThen(new Taxi(drive, true))));
-    autoChooser.addOption("Taxi (FB)", new AutoRoutine(AutoPosition.FENDER_B,
-        new WaitCommand(12.0).andThen(new Taxi(drive, true))));
-    autoChooser.addOption("Drive Characterization",
-        new AutoRoutine(AutoPosition.ORIGIN,
-            new FeedForwardCharacterization(drive, true,
-                new FeedForwardCharacterizationData("drive"),
-                drive::runCharacterizationVolts,
-                drive::getCharacterizationVelocity)));
-    autoChooser.addOption("Three Cargo",
-        new AutoRoutine(AutoPosition.TARMAC_D, new ThreeCargoAuto(drive)));
-    autoChooser.addOption("Five Cargo",
-        new AutoRoutine(AutoPosition.TARMAC_D, new FiveCargoAuto(drive)));
-    autoChooser.addOption("Six Cargo",
-        new AutoRoutine(AutoPosition.TARMAC_D, new SixBallAuto(drive)));
 
     // Set up choosers
     joystickModeChooser.addDefaultOption("Standard", JoystickMode.Standard);
@@ -208,9 +156,6 @@ public class RobotContainer {
     // new Trigger(() -> driverController.getLeftTriggerAxis() > 0.5)
     // .whileTrue(new AutoDriveHard(drive));
 
-    // Climber controls
-    climber.setDefaultCommand(
-        new RunClimber(climber, () -> -operatorController.getLeftY()));
   }
 
   /**
