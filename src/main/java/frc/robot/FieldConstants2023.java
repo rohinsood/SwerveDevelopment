@@ -160,54 +160,54 @@ public final class FieldConstants2023 {
   }
 
   // Dimensions for loading zone and substations, including the tape
-  public static final class LoadingZone {
-    // Region dimensions
-    public static final double width = Units.inchesToMeters(99.0);
-    public static final double innerX = FieldConstants.fieldLength;
-    public static final double midX =
-        fieldLength - Units.inchesToMeters(132.25);
-    public static final double outerX =
-        fieldLength - Units.inchesToMeters(264.25);
-    public static final double leftY = FieldConstants.fieldWidth;
-    public static final double midY = leftY - Units.inchesToMeters(50.5);
-    public static final double rightY = leftY - width;
-    public static final Translation2d[] regionCorners =
-        new Translation2d[] {new Translation2d(midX, rightY), // Start at lower left next to border
-                                                              // with opponent community
-            new Translation2d(midX, midY), new Translation2d(outerX, midY),
-            new Translation2d(outerX, leftY), new Translation2d(innerX, leftY),
-            new Translation2d(innerX, rightY),};
+  // public static final class LoadingZone {
+  //   // Region dimensions
+  //   public static final double width = Units.inchesToMeters(99.0);
+  //   // public static final double innerX = FieldConstants.fieldLength;
+  //   public static final double midX =
+  //       fieldLength - Units.inchesToMeters(132.25);
+  //   public static final double outerX =
+  //       fieldLength - Units.inchesToMeters(264.25);
+  //   // public static final double leftY = FieldConstants.fieldWidth;
+  //   // public static final double midY = leftY - Units.inchesToMeters(50.5);
+  //   // public static final double rightY = leftY - width;
+  //   public static final Translation2d[] regionCorners =
+  //       // new Translation2d[] {new Translation2d(midX, rightY), // Start at lower left next to border
+  //       //                                                       // with opponent community
+  //       //     new Translation2d(midX, midY), new Translation2d(outerX, midY),
+  //       //     new Translation2d(outerX, leftY), new Translation2d(innerX, leftY),
+  //       //     new Translation2d(innerX, rightY),};
 
-    // Double substation dimensions
-    public static final double doubleSubstationLength =
-        Units.inchesToMeters(14.0);
-    public static final double doubleSubstationX =
-        innerX - doubleSubstationLength;
-    public static final double doubleSubstationShelfZ =
-        Units.inchesToMeters(37.375);
+  //   // Double substation dimensions
+  //   public static final double doubleSubstationLength =
+  //       Units.inchesToMeters(14.0);
+  //   public static final double doubleSubstationX =
+  //       innerX - doubleSubstationLength;
+  //   public static final double doubleSubstationShelfZ =
+  //       Units.inchesToMeters(37.375);
 
-    // Single substation dimensions
-    public static final double singleSubstationWidth =
-        Units.inchesToMeters(22.75);
-    public static final double singleSubstationLeftX =
-        FieldConstants.fieldLength - doubleSubstationLength
-            - Units.inchesToMeters(88.77);
-    public static final double singleSubstationCenterX =
-        singleSubstationLeftX + (singleSubstationWidth / 2.0);
-    public static final double singleSubstationRightX =
-        singleSubstationLeftX + singleSubstationWidth;
-    public static final Translation2d singleSubstationTranslation =
-        new Translation2d(singleSubstationCenterX, leftY);
+  //   // Single substation dimensions
+  //   public static final double singleSubstationWidth =
+  //       Units.inchesToMeters(22.75);
+  //   public static final double singleSubstationLeftX =
+  //       FieldConstants.fieldLength - doubleSubstationLength
+  //           - Units.inchesToMeters(88.77);
+  //   public static final double singleSubstationCenterX =
+  //       singleSubstationLeftX + (singleSubstationWidth / 2.0);
+  //   public static final double singleSubstationRightX =
+  //       singleSubstationLeftX + singleSubstationWidth;
+  //   public static final Translation2d singleSubstationTranslation =
+  //       new Translation2d(singleSubstationCenterX, leftY);
 
-    public static final double singleSubstationHeight =
-        Units.inchesToMeters(18.0);
-    public static final double singleSubstationLowZ =
-        Units.inchesToMeters(27.125);
-    public static final double singleSubstationCenterZ =
-        singleSubstationLowZ + (singleSubstationHeight / 2.0);
-    public static final double singleSubstationHighZ =
-        singleSubstationLowZ + singleSubstationHeight;
-  }
+  //   public static final double singleSubstationHeight =
+  //       Units.inchesToMeters(18.0);
+  //   public static final double singleSubstationLowZ =
+  //       Units.inchesToMeters(27.125);
+  //   public static final double singleSubstationCenterZ =
+  //       singleSubstationLowZ + (singleSubstationHeight / 2.0);
+  //   public static final double singleSubstationHighZ =
+  //       singleSubstationLowZ + singleSubstationHeight;
+  // }
 
   // Locations of staged game pieces
   public static final class StagingLocations {

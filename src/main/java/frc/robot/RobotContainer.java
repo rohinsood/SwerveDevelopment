@@ -54,8 +54,6 @@ public class RobotContainer {
   private boolean isFieldRelative = true;
 
   // Choosers
-  private final LoggedDashboardChooser<AutoRoutine> autoChooser =
-      new LoggedDashboardChooser<>("Auto Routine");
   private final LoggedDashboardChooser<JoystickMode> joystickModeChooser =
       new LoggedDashboardChooser<>("Linear Speed Limit");
   private final LoggedDashboardChooser<Double> demoLinearSpeedLimitChooser =
@@ -87,10 +85,6 @@ public class RobotContainer {
     drive = drive != null ? drive
         : new Drive(new GyroIO() {}, new ModuleIO() {}, new ModuleIO() {},
             new ModuleIO() {}, new ModuleIO() {});
-
-    // Set up auto routines
-    autoChooser.addDefaultOption("Do Nothing",
-        new AutoRoutine(AutoPosition.ORIGIN, new InstantCommand()));
 
     // Set up choosers
     joystickModeChooser.addDefaultOption("Standard", JoystickMode.Standard);
@@ -164,55 +158,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    AutoRoutine routine = autoChooser.get();
-    drive.setPose(routine.position.getPose());
-    return routine.command;
+    return null;
   }
 
-  private static class AutoRoutine {
-    public final AutoPosition position;
-    public final Command command;
-
-    public AutoRoutine(AutoPosition position, Command command) {
-      this.position = position;
-      this.command = command;
-    }
-  }
-
-  public static enum AutoPosition {
-    ORIGIN, TARMAC_A, TARMAC_B, TARMAC_C, TARMAC_D, FENDER_A, FENDER_A_REVERSED, FENDER_B, FENDER_B_REVERSED;
-
-    public Pose2d getPose() {
-      switch (this) {
-        case ORIGIN:
-          return new Pose2d();
-        case TARMAC_A:
-          return FieldConstants.referenceA
-              .transformBy(GeomUtil.transformFromTranslation(-0.5, 0.7));
-        case TARMAC_B:
-          return FieldConstants.referenceB
-              .transformBy(GeomUtil.transformFromTranslation(-0.5, -0.2));
-        case TARMAC_C:
-          return FieldConstants.referenceC
-              .transformBy(GeomUtil.transformFromTranslation(-0.5, -0.1));
-        case TARMAC_D:
-          return FieldConstants.referenceD
-              .transformBy(GeomUtil.transformFromTranslation(-0.5, -0.7));
-        case FENDER_A:
-          return FieldConstants.fenderA
-              .transformBy(GeomUtil.transformFromTranslation(0.5, 0.0));
-        case FENDER_A_REVERSED:
-          return FieldConstants.fenderA.transformBy(new Transform2d(
-              new Translation2d(0.5, 0.0), Rotation2d.fromDegrees(180.0)));
-        case FENDER_B:
-          return FieldConstants.fenderB
-              .transformBy(GeomUtil.transformFromTranslation(0.5, 0.0));
-        case FENDER_B_REVERSED:
-          return FieldConstants.fenderB.transformBy(new Transform2d(
-              new Translation2d(0.5, 0.0), Rotation2d.fromDegrees(180.0)));
-        default:
-          return new Pose2d();
-      }
-    }
-  }
 }

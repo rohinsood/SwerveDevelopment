@@ -7,7 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 import frc.robot.subsystems.drive.Drive;
-import frc.robot.util.AutoDriveSoftWithSpline;
 import frc.robot.util.GeomUtil;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.MathUtil;
