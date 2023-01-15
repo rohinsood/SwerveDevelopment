@@ -4,25 +4,17 @@
 
 package frc.robot.subsystems.drive;
 
-import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.sensors.Pigeon2;
-
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj.SPI;
 
-/** IO implementation for Pigeon2 */
-public class GyroIOPigeon2 implements GyroIO {
-  private final Pigeon2 gyro;
-  private final double[] xyzDps = new double[3];
+/** IO implementation for NavX */
+public class GyroIONavX implements GyroIO {
+  private final AHRS gyro;
+  private final double[] xyzDps = new double[3]; // x, y, z in degrees/second
 
-  public GyroIOPigeon2() {
-    switch (Constants.getRobot()) {
-      case ROBOT_2022S:
-        gyro = new Pigeon2(0);
-        break;
-      default:
-        throw new RuntimeException("Invalid robot for GyroIOPigeon2");
-    }
+  public GyroIONavX() {
+    gyro = new AHRS(SPI.Port.kMXP);
   }
 
   public void updateInputs(GyroIOInputs inputs) {
@@ -30,10 +22,11 @@ public class GyroIOPigeon2 implements GyroIO {
     // "getAngle" instead of "getYaw" (what's the difference?)
     //
     // Remember to pay attention to the UNITS.
-    gyro.getRawGyro(xyzDps);
-    inputs.connected = gyro.getLastError().equals(ErrorCode.OK);
+    xyzDps[0] = gyro.getRawGyroX();
+    xyzDps[1] = gyro.getRawAccelY();
+    xyzDps[2] = gyro.getRawAccelZ();
+    inputs.connected = gyro.isConnected();
     inputs.positionRad = Units.degreesToRadians(gyro.getYaw());
     inputs.velocityRadPerSec = Units.degreesToRadians(xyzDps[2]);
-
   }
 }
