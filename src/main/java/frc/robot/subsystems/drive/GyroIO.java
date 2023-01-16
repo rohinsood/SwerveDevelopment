@@ -8,7 +8,6 @@ import org.littletonrobotics.junction.AutoLog;
 
 /** Add your docs here. */
 public interface GyroIO {
-  @AutoLog
   public static class GyroIOInputs {
     public boolean connected = false;
     public double positionRad = 0.0;

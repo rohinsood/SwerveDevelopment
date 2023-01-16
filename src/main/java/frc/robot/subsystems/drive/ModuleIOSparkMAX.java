@@ -10,6 +10,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.constraint.MaxVelocityConstraint;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
@@ -24,7 +25,6 @@ public class ModuleIOSparkMAX implements ModuleIO {
   private final SparkMaxDerivedVelocityController driveDerivedVelocityController;
   private final RelativeEncoder driveDefaultEncoder;
   private final RelativeEncoder turnRelativeEncoder;
-  private final AnalogInput turnAbsoluteEncoder;
 
   private final double driveAfterEncoderReduction =
       (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
@@ -32,7 +32,6 @@ public class ModuleIOSparkMAX implements ModuleIO {
 
   private final boolean isTurnMotorInverted = true;
   private final boolean isAbsoluteEncoderInverted = false;
-  private final Rotation2d absoluteEncoderOffset;
 
   public ModuleIOSparkMAX(int index) {
     switch (Constants.getRobot()) {
@@ -41,26 +40,18 @@ public class ModuleIOSparkMAX implements ModuleIO {
           case 0:
             driveSparkMax = new CANSparkMax(1, MotorType.kBrushless);
             turnSparkMax = new CANSparkMax(2, MotorType.kBrushless);
-            turnAbsoluteEncoder = new AnalogInput(0);
-            absoluteEncoderOffset = new Rotation2d(-0.036);
             break;
           case 1:
             driveSparkMax = new CANSparkMax(3, MotorType.kBrushless);
             turnSparkMax = new CANSparkMax(4, MotorType.kBrushless);
-            turnAbsoluteEncoder = new AnalogInput(1);
-            absoluteEncoderOffset = new Rotation2d(1.0185);
             break;
           case 2:
             driveSparkMax = new CANSparkMax(5, MotorType.kBrushless);
             turnSparkMax = new CANSparkMax(6, MotorType.kBrushless);
-            turnAbsoluteEncoder = new AnalogInput(2);
-            absoluteEncoderOffset = new Rotation2d(1.0705);
             break;
           case 3:
             driveSparkMax = new CANSparkMax(7, MotorType.kBrushless);
             turnSparkMax = new CANSparkMax(8, MotorType.kBrushless);
-            turnAbsoluteEncoder = new AnalogInput(3);
-            absoluteEncoderOffset = new Rotation2d(0.7465);
             break;
           default:
             throw new RuntimeException(
@@ -115,14 +106,13 @@ public class ModuleIOSparkMAX implements ModuleIO {
     inputs.driveTempCelcius =
         new double[] {driveSparkMax.getMotorTemperature()};
 
-    double absolutePositionPercent =
-        turnAbsoluteEncoder.getVoltage() / RobotController.getVoltage5V();
-    if (isAbsoluteEncoderInverted) {
-      absolutePositionPercent = 1 - absolutePositionPercent;
-    }
-    inputs.turnAbsolutePositionRad =
-        new Rotation2d(absolutePositionPercent * 2.0 * Math.PI)
-            .minus(absoluteEncoderOffset).getRadians();
+    // double absolutePositionPercent = turnRelativeEncoder.getPosition() / 12.8;
+    // if (isAbsoluteEncoderInverted) {
+    // absolutePositionPercent = 1 - absolutePositionPercent;
+    // }
+    inputs.turnAbsolutePositionRad = 
+        Units.rotationsToRadians(turnRelativeEncoder.getPosition() % (Math.PI*2) )
+            / turnAfterEncoderReduction;
     inputs.turnPositionRad =
         Units.rotationsToRadians(turnRelativeEncoder.getPosition())
             / turnAfterEncoderReduction;
